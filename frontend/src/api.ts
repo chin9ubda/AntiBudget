@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.DEV ? 'http://localhost:8081/api' : '/api',
+    baseURL: import.meta.env.DEV ? 'http://localhost:18081/api' : '/api',
 });
 
 export interface Transaction {
