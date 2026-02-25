@@ -1,0 +1,10 @@
+.gradle
+build
+bin
+gradle-8.5
+gradle-8.5-bin.zip
+frontend/node_modules
+frontend/dist
+.git
+.DS_Store
+*.log
