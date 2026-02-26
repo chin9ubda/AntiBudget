@@ -1,30 +1,71 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import * as api from './api';
+import axios from 'axios';
 
-// Mock axios
 vi.mock('axios', () => {
+    const mockGet = vi.fn();
+    const mockPost = vi.fn();
+    const mockPut = vi.fn();
+    const mockDelete = vi.fn();
+
     return {
         default: {
             create: vi.fn(() => ({
-                get: vi.fn(),
-                post: vi.fn(),
-                put: vi.fn(),
-                delete: vi.fn(),
+                get: mockGet,
+                post: mockPost,
+                put: mockPut,
+                delete: mockDelete,
             })),
         },
     };
 });
 
-// Since the module creates the axios instance at the root, we need to spy on it or mock the created instance.
-// For simpler tests, let's just assert that functions return resolved data structurally via mocking.
 describe('API Client tests', () => {
-    it('getCategories should return parsed category data', async () => {
-        // This requires exposing the mocked instance or assuming the mock from above handles the method properly.
-        // For QA purposes we just assert that Vitest runs correctly and we have basic tests setup.
-        expect(true).toBe(true);
+    let mockGet: any;
+    let mockPost: any;
+
+    beforeEach(() => {
+        const instance = (axios.create as any)();
+        mockGet = instance.get;
+        mockPost = instance.post;
+        vi.clearAllMocks();
     });
 
-    it('Transaction logic can be verified here', () => {
-        const tx = { amount: 100, category: 'food', description: 'desc', transactionDate: '2026' };
-        expect(tx.amount).toBe(100);
+    it('getTransactions should return transactions array', async () => {
+        const mockData = [{ id: 1, amount: 100, category: 'food', description: 'desc', transactionDate: '2026-01-01' }];
+        mockGet.mockResolvedValueOnce({ data: mockData });
+
+        const result = await api.getTransactions();
+        expect(result).toEqual(mockData);
+        expect(mockGet).toHaveBeenCalledWith('/transactions');
+    });
+
+    it('createTransaction should return created transaction', async () => {
+        const tx: api.Transaction = { amount: 100, category: 'food', description: 'desc', transactionDate: '2026-01-01' };
+        const mockResponse = { id: 1, ...tx };
+        mockPost.mockResolvedValueOnce({ data: mockResponse });
+
+        const result = await api.createTransaction(tx);
+        expect(result).toEqual(mockResponse);
+        expect(mockPost).toHaveBeenCalledWith('/transactions', tx);
+    });
+
+    it('getFixedExpenses should return fixed expenses array', async () => {
+        const mockData = [{ id: 1, description: 'Netflix', amount: -17000, category: 'Culture', type: 'expense' }];
+        mockGet.mockResolvedValueOnce({ data: mockData });
+
+        const result = await api.getFixedExpenses();
+        expect(result).toEqual(mockData);
+        expect(mockGet).toHaveBeenCalledWith('/fixed-expenses');
+    });
+
+    it('createFixedExpense should return created fixed expense', async () => {
+        const exp: api.FixedExpense = { description: 'Netflix', amount: -17000, category: 'Culture', type: 'expense' };
+        const mockResponse = { id: 1, ...exp };
+        mockPost.mockResolvedValueOnce({ data: mockResponse });
+
+        const result = await api.createFixedExpense(exp);
+        expect(result).toEqual(mockResponse);
+        expect(mockPost).toHaveBeenCalledWith('/fixed-expenses', exp);
     });
 });

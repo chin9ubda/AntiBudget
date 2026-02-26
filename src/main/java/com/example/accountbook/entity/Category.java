@@ -9,20 +9,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Entity
 @Table(name = "categories")
 @Getter
 @Setter
 @NoArgsConstructor
+@Schema(description = "카테고리 정보")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "카테고리 고유 ID", example = "1")
     private Long id;
 
+    @Schema(description = "카테고리명", example = "식비")
     private String name;
 
-    // "income" or "expense"
+    @Schema(description = "수입/지출 구분 (\"income\" or \"expense\")", example = "expense")
     private String type;
 
     public Category(String name, String type) {
