@@ -15,23 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v2
+      - name: Build and push images
+        uses: docker/build-push-action@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }}
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/antibudget-backend:latest
 
-      - name: Build backend image
-        run: |
-          docker build -f Dockerfile -t ghcr.io/${{ github.repository_owner }}/antibudget-backend:latest .
-      - name: Build frontend image
-        run: |
-          docker build -f frontend/Dockerfile -t ghcr.io/${{ github.repository_owner }}/antibudget-frontend:latest ./frontend
-
-      - name: Push backend image
-        run: |
-          docker push ghcr.io/${{ github.repository_owner }}/antibudget-backend:latest
-      - name: Push frontend image
-        run: |
-          docker push ghcr.io/${{ github.repository_owner }}/antibudget-frontend:latest
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          file: frontend/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/antibudget-frontend:latest
