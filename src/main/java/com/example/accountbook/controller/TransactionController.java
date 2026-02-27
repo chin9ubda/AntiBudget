@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:3000", "http://192.168.10.44:3000"})
 @Tag(name = "Transaction Controller", description = "가계부 거래 관리 API")
 public class TransactionController {
 
