@@ -15,6 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Debug: environment and docker
+        run: |
+          echo "--- Debug: runner info ---"
+          uname -a
+          docker --version || true
+          echo "GHCR secret present: ${!!(secrets.CR_PAT)}" || true
+          echo "GITHUB_REPOSITORY=${GITHUB_REPOSITORY}"
+
       - name: Log in to GHCR with CR_PAT
         uses: docker/login-action@v2
         with:
