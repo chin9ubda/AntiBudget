@@ -21,11 +21,11 @@ vi.mock('axios', () => {
 });
 
 describe('API Client tests', () => {
-    let mockGet: any;
-    let mockPost: any;
+    let mockGet: jest.Mock;
+    let mockPost: jest.Mock;
 
     beforeEach(() => {
-        const instance = (axios.create as any)();
+        const instance = (axios.create as jest.Mock)();
         mockGet = instance.get;
         mockPost = instance.post;
         vi.clearAllMocks();
