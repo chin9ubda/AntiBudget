@@ -17,6 +17,7 @@ services:
       - "18081:18081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db
     restart: unless-stopped
